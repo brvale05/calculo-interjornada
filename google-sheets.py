@@ -111,25 +111,3 @@ def get_dataframe_julho():
         return pd.concat(dados_completos, ignore_index=True)
     else:
         return pd.DataFrame()
-
-def teste():
-
-    df = pd.read_csv("dados_folha_julho.csv")
-
-    df.drop(df.columns[[5, 6]], axis=1, inplace=True)
-
-    df.to_csv("dados_folha_julho_versao2.csv", index=False, encoding="utf-8")
-
-
-def main():
-
-    # df_junho = get_dataframe_junho()
-
-    df_julho = get_dataframe_julho()
-
-    # df = pd.concat([df_junho, df_julho], ignore_index=True)
-
-    df_julho.to_csv("dados_folha_julho.csv", index=False, encoding="utf-8")
-
-# main()
-teste()
