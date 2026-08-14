@@ -33,6 +33,20 @@ def get_spreadsheet_julho():
     return spreadsheet
 
 
+def get_spreadsheet_agosto():
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+
+    creds = Credentials.from_service_account_file("cedar-lexicon.json", scopes=scopes)
+    client = gspread.authorize(creds)
+
+    spreadsheet = client.open(title="FOLHA AGOSTO", folder_id="1jV01RSXhwUTQ90u38ZXwep7KFAyWCQpv")
+
+    return spreadsheet
+
+
 
 def get_dataframe_junho():
     spreadsheet = get_spreadsheet_junho()
@@ -111,3 +125,66 @@ def get_dataframe_julho():
         return pd.concat(dados_completos, ignore_index=True)
     else:
         return pd.DataFrame()
+
+
+def get_dataframe_agosto():
+    spreadsheet = get_spreadsheet_agosto()
+
+    dados_completos = []
+
+    for sheet in spreadsheet.worksheets():
+        title = sheet.title.upper()
+        values = sheet.get("B13:F29")
+
+        headers = values[0]
+        data = values[1:]
+
+        data_fixed = []
+        for row in data:
+            # Se a linha veio menor que o cabeçalho, adiciona itens vazios ('') no final
+            if len(row) < len(headers):
+                row.extend([''] * (len(headers) - len(row)))
+
+            # O [:len(headers)] garante que a linha não terá mais elementos que o cabeçalho
+            data_fixed.append(row[:len(headers)])
+
+        # Cria o dataframe com a lista corrigida
+        df = pd.DataFrame(data_fixed, columns=headers)
+
+        df['NOME'] = title
+        df['MES'] = 'JULHO'
+
+        df.drop(df.columns[[2, 3]], axis=1, inplace=True)
+
+        dados_completos.append(df)
+
+        time.sleep(3)
+
+    if dados_completos:
+        return pd.concat(dados_completos, ignore_index=True)
+    else:
+        return pd.DataFrame()
+
+
+def main():
+
+    df = pd.read_csv("dados_folha_agosto.csv")
+
+    # df.drop("CTPS:", axis=1, inplace=True)
+    # df.drop("CARGO: MOTORISTA", axis=1, inplace=True)
+    # df.drop("17:41", axis=1, inplace=True)
+    # df.drop( "6:09", axis=1, inplace=True)
+    # df.drop("16-jul.", axis=1, inplace=True)
+
+    df.drop( "17:41", axis=1, inplace=True)
+    df.drop( "16-jul.", axis=1, inplace=True)
+    df.drop( "CARGO: MOTORISTA", axis=1, inplace=True)
+    df.drop("6:09", axis=1, inplace=True)
+    df.drop("CTPS: ", axis=1, inplace=True)
+
+    df.to_csv("dados_folha_agosto.csv", index=False)
+
+    print(df)
+
+
+main()

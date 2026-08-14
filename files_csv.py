@@ -15,15 +15,26 @@ def fix_month(df):
 
     return df
 
+def get_agosto_dataframe():
+    df = pd.read_csv("dados_folha_agosto.csv")
+
+    return df
+
+
 def write_df_to_csv(df):
 
     df.to_csv("folha_completa_bruta.csv", index=False)
 
+
+def write_df_agosto_to_csv(df):
+
+    df.to_csv("folha_completa_agosto_bruta.csv", index=False)
+
+
 def main():
 
-    df = get_months_dataframe()
-    df = fix_month(df)
+    df = get_agosto_dataframe()
 
-    write_df_to_csv(df)
+    write_df_agosto_to_csv(df)
 
 main()

@@ -1,14 +1,24 @@
+from json.decoder import NaN
+
 import pandas as pd
 
 
 def get_complete_dataframe():
-    df = pd.read_csv("folha_completa_bruta.csv")
+    df = pd.read_csv("folha_completa_agosto_bruta.csv")
 
-    df_agosto = pd.read_csv("folha_completa_agosto_bruta.csv")
+    return df
 
-    df_novo = pd.concat([df, df_agosto])
-
-    return df_novo
+#
+# def separate_string(string):
+#
+#     vetor = str(string).split("-")
+#
+#     dia = vetor[0]
+#
+#     if dia is NaN:
+#         pass
+#     else:
+#         return dia + "/07/2026"
 
 
 def fix_date(df):
@@ -17,11 +27,6 @@ def fix_date(df):
     df["DIA"] = df["DIA"].dt.strftime("%d/%m/%Y")
 
     return df
-
-
-def write_names_csv(df):
-    df_names = df["NOME"].sort_values(ascending=True).drop_duplicates()
-    df_names.to_csv("nomes_bruto.csv", index=False)
 
 
 def fix_names(df):
@@ -53,17 +58,14 @@ def fix_names(df):
 
 def main():
     df = get_complete_dataframe()
-
     df = fix_date(df)
-
-    write_names_csv(df)
 
     df = fix_names(df)
 
-    df.to_csv("folha_completa_limpa.csv", index=False)
+    df.to_csv("folha_completa_agosto_limpa.csv", index=False)
 
     df_names = df["NOME"].sort_values(ascending=True).drop_duplicates()
-    df_names.to_csv("nomes_limpo.csv", index=False)
+    df_names.to_csv("nomes_agosto_limpo.csv", index=False)
 
 
 main()
